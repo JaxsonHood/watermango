@@ -9,6 +9,9 @@
 
 **/node_modules
 
+MyData-log.db
+MyData.db
+
 .vscode/
 
 # User-specific files (MonoDevelop/Xamarin Studio)

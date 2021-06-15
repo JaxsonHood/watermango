@@ -7,7 +7,7 @@ namespace watermango {
     [ApiController]
     public class PlantController : ControllerBase
     {
-        LiteDbInterface db = new LiteDbInterface();
+        LiteDbManager db = new LiteDbManager();
 
         [HttpGet("plants/all")]
         public ActionResult<IEnumerable<Plant>> GetAll()
@@ -31,12 +31,12 @@ namespace watermango {
 
     public class IdHolder 
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
     }
 
     public class Plant
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string Title { get; set; }
         public int WaterTime { get; set; }
 
@@ -45,7 +45,7 @@ namespace watermango {
         public Plant()
         {}
 
-        public Plant(int id, string title, int waterTime, string watered)
+        public Plant(string id, string title, int waterTime, string watered)
         {
             this.ID = id; this.Title = title; this.WaterTime = waterTime; this.Watered = watered;
         }
