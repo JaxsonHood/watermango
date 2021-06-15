@@ -9,4 +9,4 @@ Watermango web-app assignment
 # run 
 - Navigate to root directory of project
 - Run 'dotnet run -watch'
-- Open your browser and nagivate to 'localhost:5001'
+- Open your browser and navigate to 'localhost:5001'

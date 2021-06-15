@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import FlowerCard from '../components/FlowerCard';
 import PlantsSection from '../components/PlantsSection';
 
 class Landing extends React.Component {

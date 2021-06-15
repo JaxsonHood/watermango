@@ -13,7 +13,7 @@ namespace watermango {
 
         public LiteDbManager()
         {
-            Database = new LiteDatabase(@"MyData.db");
+            Database = new LiteDatabase(@"WatermangoData.db");
 
             var collection = Database.GetCollection<Plant>("plants");
             IEnumerable<Plant> pe = collection.FindAll();
@@ -29,13 +29,13 @@ namespace watermango {
                 collection.Insert(defaultPlants);
 
                 // Loop through and print out all properties
-                foreach (var p in collection.FindAll().ToList()){
-                    foreach (PropertyInfo prop in p.GetType().GetProperties())
-                    {
-                        var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                        Console.WriteLine(prop.GetValue(p, null).ToString());
-                    }
-                }
+                // foreach (var p in collection.FindAll().ToList()){
+                //     foreach (PropertyInfo prop in p.GetType().GetProperties())
+                //     {
+                //         var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                //         Console.WriteLine(prop.GetValue(p, null).ToString());
+                //     }
+                // }
 
             }
         }
@@ -45,8 +45,17 @@ namespace watermango {
         }
 
         public void AddPlant(Plant p){
+            Plant pl = new Plant(){
+                ID = NextId(),
+                Title = p.Title,
+                WaterTime = p.WaterTime,
+                Watered = p.Watered
+            };
+
+            Console.WriteLine("Adding plant with ID: " + pl.ID);
+
             var collection = Database.GetCollection<Plant>("plants");
-            collection.Insert(p);
+            collection.Insert(pl);
         }
 
         public List<Plant> AllPlants(){

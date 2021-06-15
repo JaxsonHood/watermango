@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTint, faSeedling, faPencilAlt, faHandHoldingWater, faPlayCircle, faSpa, faFillDrip } from '@fortawesome/free-solid-svg-icons'
 
-class FlowerCard extends Component {
+class PlantCard extends Component {
 
   render () {
 
@@ -59,7 +59,7 @@ class FlowerCard extends Component {
                     </div>
                     {waterStatusTop}
                 </div>
-                <div className='h-16 font-bold p-2 overflow-hidden text-base'>{this.props.title}</div>
+                <div className='h-14 font-bold p-2 overflow-hidden text-base'>{this.props.title}</div>
                 <div>
                     {/* <div className='p-1 pt-0 text-xs font-bold text-gray-600'>Actions:</div> */}
                     <div className='pt-2 grid grid-cols-2 gap-2'>
@@ -84,4 +84,4 @@ class FlowerCard extends Component {
   }
 }
 
-export default FlowerCard;
+export default PlantCard;
