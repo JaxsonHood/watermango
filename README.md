@@ -7,4 +7,6 @@ Watermango web-app assignment
 - run 'npm install'
 
 # run 
-ssss
+- Navigate to root directory of project
+- Run 'dotnet run -watch'
+- Open your browser and nagivate to 'localhost:5001'
