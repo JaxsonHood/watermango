@@ -47,13 +47,13 @@ class PlantAddModal extends React.Component {
                             <div class="mb-3 space-y-2 w-full text-sm">
                                 <label class=" font-semibold text-gray-800 py-2">Title</label>
                                 <div class="flex flex-wrap items-stretch w-full mb-4 relative">
-                                    <input type="text" class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light rounded-lg px-3 relative focus:border-blue focus:shadow" placeholder="ex. Plants in the BOARDROOM" value={this.state.title}onChange={this.updateTitle}></input>
+                                    <input type="text" class="flex-shrink flex-grow flex-auto leading-normal w-px border h-10 border-grey-light rounded-lg px-3 relative focus:border-blue focus:shadow" placeholder="ex. Plants in the BOARDROOM" value={this.state.title}onChange={this.updateTitle}></input>
                                 </div>
                             </div>
                             <div class="mb-3 space-y-2 w-full text-sm">
                                 <label class=" font-semibold text-gray-800 py-2">Time to water plant (in SECONDS)</label>
                                 <div class="flex flex-wrap items-stretch w-full mb-4 relative">
-                                    <input type="number" class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light rounded-lg px-3 relative focus:border-blue focus:shadow" defaultValue='10' value={this.state.timeToWater}onChange={this.updateTimeToWater}></input>
+                                    <input type="number" class="flex-shrink flex-grow flex-auto leading-normal w-px border h-10 border-grey-light rounded-lg px-3 relative focus:border-blue focus:shadow" defaultValue='10' value={this.state.timeToWater}onChange={this.updateTimeToWater}></input>
                                 </div>
                             </div>
                         </div>
