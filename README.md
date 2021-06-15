@@ -5,3 +5,6 @@ Watermango web-app assignment
 - Have NodeJS installed
 - Navigate to 'ClientApp' directory
 - run 'npm install'
+
+# run 
+ssss
