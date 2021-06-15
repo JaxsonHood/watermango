@@ -9,6 +9,8 @@
 
 **/node_modules
 
+.vscode/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
