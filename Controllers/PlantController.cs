@@ -9,11 +9,9 @@ namespace watermango {
     {
         LiteDbManager db = new LiteDbManager();
 
-        [HttpGet("plants/all")]
-        public ActionResult<IEnumerable<Plant>> GetAll()
+        [HttpGet("plants/all/{userId}")]
+        public ActionResult<IEnumerable<Plant>> GetAll(string userId)
         {
-            var thing = Request.QueryString;
-            Console.WriteLine(thing);
             ActionResult<IEnumerable<Plant>> ief = db.AllPlants();
             return ief;
         }

@@ -85,7 +85,7 @@ class PlantsSection extends Component {
         if (pause) this.setState({pauseAllEvents: true});
 
         if (!pause){
-            fetch('/plants/all')
+            fetch('/plants/all/2')
             .then(response => response.json())
             .then(result => {
                 this.setState({plants: result});
@@ -95,7 +95,7 @@ class PlantsSection extends Component {
             });
         } else {
             setTimeout(() => {
-                fetch('/plants/all')
+                fetch('/plants/all/1')
                 .then(response => response.json())
                 .then(result => {
                     this.setState({plants: result, pauseAllEvents: false});

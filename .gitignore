@@ -9,8 +9,8 @@
 
 **/node_modules
 
-MyData-log.db
-MyData.db
+WatermangoData-log.db
+WatermangoData.db
 
 .vscode/
 
