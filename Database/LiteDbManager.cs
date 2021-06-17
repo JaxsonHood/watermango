@@ -21,9 +21,9 @@ namespace watermango {
 
             if (pl.Count == 0){
                 List<Plant> defaultPlants = new List<Plant>(){
-                    new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full"),
-                    new Plant(NextId(), "The Roses beside Kevin", 67, "Semi"),
-                    new Plant(NextId(), "Front-desk shrubbery", 10, "Empty")
+                    new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full", 50),
+                    new Plant(NextId(), "The Roses beside Kevin", 67, "Semi", 30),
+                    new Plant(NextId(), "Front-desk shrubbery", 10, "Empty", 10)
                 };
 
                 collection.Insert(defaultPlants);
@@ -44,18 +44,29 @@ namespace watermango {
             return CorrelationIdGenerator.GetNextId();
         }
 
-        public void AddPlant(Plant p){
-            Plant pl = new Plant(){
-                ID = NextId(),
-                Title = p.Title,
-                WaterTime = p.WaterTime,
-                Watered = p.Watered
-            };
-
-            Console.WriteLine("Adding plant with ID: " + pl.ID);
+        public void AddEditPlant(Plant p){
 
             var collection = Database.GetCollection<Plant>("plants");
-            collection.Insert(pl);
+
+            if (p.ID == null){
+                Plant pl = new Plant(){
+                    ID = NextId(),
+                    Title = p.Title,
+                    WaterTime = p.WaterTime,
+                    Watered = p.Watered,
+                    TimeToWait = p.TimeToWait
+                };
+
+                Console.WriteLine("Adding plant with ID: " + pl.ID);
+                collection.Insert(pl);
+            } else {
+                collection.Update(p);
+            }
+        }
+
+        public void RemovePlant(Plant p){
+            var collection = Database.GetCollection<Plant>("plants");
+            collection.Delete(p.ID);
         }
 
         public List<Plant> AllPlants(){

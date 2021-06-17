@@ -19,19 +19,14 @@ namespace watermango {
         [HttpPost("plants/add")]
         public void Add(Plant plant)
         {
-            db.AddPlant(plant);
+            db.AddEditPlant(plant);
         }
 
         [HttpPost("plants/remove")]
-        public void Remove(IdHolder holder)
+        public void Remove(Plant plant)
         {
-            Console.WriteLine(holder.ID);
+            db.RemovePlant(plant);
         }
-    }
-
-    public class IdHolder 
-    {
-        public string ID { get; set; }
     }
 
     public class Plant
@@ -40,14 +35,19 @@ namespace watermango {
         public string Title { get; set; }
         public int WaterTime { get; set; }
 
+        public int TimeToWait { get; set;}
+
         public string Watered { get; set; }
 
         public Plant()
         {}
 
-        public Plant(string id, string title, int waterTime, string watered)
+        public Plant(string id, string title, int waterTime, string watered, int timeToWait)
         {
-            this.ID = id; this.Title = title; this.WaterTime = waterTime; this.Watered = watered;
+            this.ID = id; 
+            this.Title = title; 
+            
+            this.WaterTime = waterTime; this.Watered = watered; this.TimeToWait = timeToWait;
         }
     }
 }
