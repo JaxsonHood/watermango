@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
+import ReactTooltip from 'react-tooltip';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTint, faSeedling, faPencilAlt, faHandHoldingWater, faPlayCircle, faSpa, faFillDrip, faPause, faClock, faStop } from '@fortawesome/free-solid-svg-icons'
+import { faTint, faPencilAlt, faHandHoldingWater, faPlayCircle, faSpa, faFillDrip, faPause, faClock, faStop } from '@fortawesome/free-solid-svg-icons'
 
 class PlantCard extends Component {
 
@@ -168,6 +170,7 @@ class PlantCard extends Component {
                 <div>Stop</div>
                 <div className='flex items-center justify-center pt-1 text-gray-100'><FontAwesomeIcon size="md" icon={faStop} /></div>
             </div>
+            
         }
 
         if (this.props.watered == 'Empty'){
@@ -188,12 +191,13 @@ class PlantCard extends Component {
                         {waterStatusTop}
                     </div>
                     <div className='h-14 font-bold m-2 overflow-hidden text-base'>{this.props.title}</div>
-                    <div className='m-3'>
+                    <div className='m-3 mt-0'>
                         <div className='p-1 grid grid-cols-2 gap-2 border-t-2 border-b-2'>
-                            <div className="text-center p-3 py-1 px-2 text-xs rounded-2xl bg-gray-50 font-semibold" onClick={this.PauseWatering}>
+                            
+                            <div data-tip="Time to wait after watering" className="text-center p-3 py-1 px-2 text-xs rounded-2xl bg-gray-50 font-semibold" onClick={this.PauseWatering}>
                                 <div className='flex items-center justify-center pt-1 text-purple-500'><FontAwesomeIcon size="md" icon={faClock} /><span className='pl-1'><div className='text-sm font-bold text-gray-900'>{this.props.data.timeToWait}(s)</div></span></div>
                             </div>
-                            <div className="text-center p-3 py-1 px-2 mb-1 text-xs rounded-2xl bg-gray-50 font-semibold" onClick={this.PauseWatering}>
+                            <div data-tip="Time it takes to water" className="text-center p-3 py-1 px-2 mb-1 text-xs rounded-2xl bg-gray-50 font-semibold" onClick={this.PauseWatering}>
                                 <div className='flex items-center justify-center pt-1 text-pink-500'><FontAwesomeIcon size="md" icon={faTint} /><span className='pl-1'><div className='text-sm font-bold text-gray-900'>{this.props.waterTime}(s)</div></span></div>
                             </div>
                         </div>
@@ -210,6 +214,7 @@ class PlantCard extends Component {
                         {waterStatusUI}
                     </div>
                 </div>
+                <ReactTooltip />
             </div>
         );
     }

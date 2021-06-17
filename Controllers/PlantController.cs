@@ -12,6 +12,8 @@ namespace watermango {
         [HttpGet("plants/all")]
         public ActionResult<IEnumerable<Plant>> GetAll()
         {
+            var thing = Request.QueryString;
+            Console.WriteLine(thing);
             ActionResult<IEnumerable<Plant>> ief = db.AllPlants();
             return ief;
         }
