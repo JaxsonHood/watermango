@@ -2,7 +2,7 @@
 Watermango web-app assignment
 
 # setup
-- Have NodeJS installed
+- Have 'npm' and 'dotnet' setup in your environment
 - Navigate to 'ClientApp' directory
 - run 'npm install'
 
