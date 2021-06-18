@@ -35,6 +35,12 @@ class PlantAddModal extends React.Component {
     }
 
     submit = () => {
+        if (!(this.state.timeToWait instanceof Number)||
+        !(this.state.timeToWater instanceof Number)){
+            alert("Please use only numbers for time fields");
+            return;
+        }
+
         if (this.state.title == ""){
             alert("Please fill out the title field.");
         } else {
