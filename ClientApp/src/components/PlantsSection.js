@@ -51,6 +51,7 @@ class PlantsSection extends Component {
           }
       }
 
+      // Keep track of all the timers so they can be deleted when there is an update
       TrackTimer = (timer, id, type) => {
           let curTimerIndex = this.state.timerIndex;
 
@@ -89,6 +90,19 @@ class PlantsSection extends Component {
             });
         }
       }
+
+      Sort = (plants) => {
+          // Automatically surface plants that need to be watered
+          return plants.sort((p1, p2) => {
+              console.log(p1.watered.length < p2.watered.length);
+              if (p1.watered.length > p2.watered.length){
+                  return -1;
+              } else if (p1.watered.length < p2.watered.length){
+                  return  1
+              }
+              return 0;
+          });
+      }
     
       fetchPlants = (pause) => {
         if (pause) this.setState({pauseAllEvents: true});
@@ -122,6 +136,7 @@ class PlantsSection extends Component {
         }
       }
     
+      // Build plant objects
       plantItems = () => {
           let rl = [];
 

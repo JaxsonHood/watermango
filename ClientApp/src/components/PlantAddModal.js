@@ -35,8 +35,8 @@ class PlantAddModal extends React.Component {
     }
 
     submit = () => {
-        if (!(this.state.timeToWait instanceof Number)||
-        !(this.state.timeToWater instanceof Number)){
+        if (!(parseInt(this.state.timeToWait))||
+        !(parseInt(this.state.timeToWater))){
             alert("Please use only numbers for time fields");
             return;
         }
