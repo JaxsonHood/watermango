@@ -117,7 +117,7 @@ class PlantsSection extends Component {
                         console.log(e);
                     });
         
-                }, 500);
+                }, 250);
             }
         }
       }
