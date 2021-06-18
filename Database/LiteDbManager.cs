@@ -21,22 +21,12 @@ namespace watermango {
 
             if (pl.Count == 0){
                 List<Plant> defaultPlants = new List<Plant>(){
-                    new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full", 50),
-                    new Plant(NextId(), "The Roses beside Kevin", 67, "Semi", 30),
-                    new Plant(NextId(), "Front-desk shrubbery", 10, "Empty", 10)
+                    new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full", 50, 1623982242897),
+                    new Plant(NextId(), "The Roses beside Kevin", 67, "Semi", 30, 1623982242897),
+                    new Plant(NextId(), "Front-desk shrubbery", 10, "Empty", 10, 1623982242897)
                 };
 
                 collection.Insert(defaultPlants);
-
-                // Loop through and print out all properties
-                // foreach (var p in collection.FindAll().ToList()){
-                //     foreach (PropertyInfo prop in p.GetType().GetProperties())
-                //     {
-                //         var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                //         Console.WriteLine(prop.GetValue(p, null).ToString());
-                //     }
-                // }
-
             }
         }
 
@@ -44,7 +34,7 @@ namespace watermango {
             return CorrelationIdGenerator.GetNextId();
         }
 
-        public void AddEditPlant(Plant p){
+        public void AddEditPlant(Plant p, String userId){
 
             var collection = Database.GetCollection<Plant>("plants");
 
@@ -57,15 +47,18 @@ namespace watermango {
                     TimeToWait = p.TimeToWait
                 };
 
-                Console.WriteLine("Adding plant with ID: " + pl.ID);
+                Console.WriteLine("Adding plant with ID: " + pl.ID + " to USER - " + userId);
                 collection.Insert(pl);
+
+                AddRemovePlantFromUser(pl, userId, "add");
             } else {
                 collection.Update(p);
             }
         }
 
-        public void RemovePlant(Plant p){
+        public void RemovePlant(Plant p, string userId){
             var collection = Database.GetCollection<Plant>("plants");
+            AddRemovePlantFromUser(p, userId, "remove");
             collection.Delete(p.ID);
         }
 
@@ -76,6 +69,72 @@ namespace watermango {
             var collection = Database.GetCollection<Plant>("plants");
 
             return collection.FindAll().ToList();
+        }
+
+        public User GetUser(String id){
+            // Get user collection
+            var collection = Database.GetCollection<User>("users");
+            return collection.FindOne(x => x.ID == id);
+        }
+
+        public User AddUser(UserTransporter transporter){
+            var collection = Database.GetCollection<User>("users");
+
+            if (collection.FindOne(x => x.Email == transporter.Email) == null){
+                User newUser = new User(NextId(), transporter.Email, transporter.Password);
+                collection.Insert(newUser);
+                return newUser;
+            }
+
+            return null;
+        }
+
+        public void AddRemovePlantFromUser(Plant p, string userId, string action){
+            var collection = Database.GetCollection<User>("users");
+            User u = collection.FindOne(x => x.ID == userId);
+
+            Console.WriteLine("User to add plant to - " + u.Email);
+            
+            if (u != null){
+                if (action == "add"){
+                    u.AddPlantId(p.ID);
+                } else u.RemovePlantId(p.ID);
+                Console.WriteLine(collection.Update(u) + " - SIZE=" + u.plantIds.Count);
+            }
+        }
+
+        public User LoginUser(UserTransporter transporter){
+            var collection = Database.GetCollection<User>("users");
+            User u = collection.FindOne(x => x.Email == transporter.Email);
+
+            if (u != null && u.Password == transporter.Password){
+                u.LoggedIn = true;
+                collection.Update(u);
+                return u;
+            }
+
+            return null;
+        }
+
+        public bool LogoutUser(UserTransporter transporter){
+            var collection = Database.GetCollection<User>("users");
+            User u = collection.FindOne(x => x.Email == transporter.Email);
+
+            if (u != null){
+                u.LoggedIn = false;
+                collection.Update(u);
+                return true;;
+            }
+
+            return false;
+        }
+
+        public List<Plant> GetPlantsForUser(string userId){
+            User u = GetUser(userId);
+
+            // Get plant collection
+            var collection = Database.GetCollection<Plant>("plants");
+            return collection.Find(x => u.plantIds.Contains<string>(x.ID)).ToList();
         }
     }
 

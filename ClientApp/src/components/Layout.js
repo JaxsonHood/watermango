@@ -8,7 +8,7 @@ class Layout extends Component {
   render () {
     return (
       <div>
-        <Header />
+        <Header logout={this.props.logout} />
         <div className='container mx-auto'>
           {this.props.children}
         </div>

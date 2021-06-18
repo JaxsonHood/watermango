@@ -6,19 +6,19 @@ import Button from './Button';
 class Header extends Component {
   static displayName = Header.name;
 
-  render () {
-    let path  = window.location.pathname
+  Logout = () => {
+    localStorage.setItem('user',  null);
+    localStorage.clear();
+    this.props.logout();
+  }
 
-    let rightColumn = <Button name='Login' 
+  render () {
+
+    let rightColumn = <Button name='Logout' 
     backgroundColor='bg-white' 
     textColor='text-black' 
     borderColor='border-blue-500'
     hoverBorderColor='border-blue-600'  />
-
-    if (path == '/home'){
-      rightColumn = <div>USER-1</div>
-    }
-
 
     return (
       <div className="w-full border-b border-gray-200 p-3">
@@ -27,9 +27,9 @@ class Header extends Component {
           <div className='text-3xl pt-1 cursor-pointer'>Watermango - <span className='font-bold'>Dashboard</span></div>
          </Link>
 
-         <Link to="/login">
+          <div onClick={()=>this.Logout()}>
           {rightColumn}
-          </Link>
+          </div>
 
         </div>
       </div>

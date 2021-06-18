@@ -42,7 +42,8 @@ class PlantAddModal extends React.Component {
                 'Title': this.state.title,
                 'WaterTime': parseInt(this.state.timeToWater),
                 'Watered': 'Empty',
-                'TimeToWait' : parseInt(this.state.timeToWait)
+                'TimeToWait': parseInt(this.state.timeToWait),
+                'LastWatered': 1623982242897
             }
 
             if (this.props.data && this.props.data.id){

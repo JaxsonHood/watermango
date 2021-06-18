@@ -12,20 +12,20 @@ namespace watermango {
         [HttpGet("plants/all/{userId}")]
         public ActionResult<IEnumerable<Plant>> GetAll(string userId)
         {
-            ActionResult<IEnumerable<Plant>> ief = db.AllPlants();
+            ActionResult<IEnumerable<Plant>> ief = db.GetPlantsForUser(userId);
             return ief;
         }
 
-        [HttpPost("plants/add")]
-        public void Add(Plant plant)
+        [HttpPost("plants/add/{userId}")]
+        public void Add(Plant plant, string userId)
         {
-            db.AddEditPlant(plant);
+            db.AddEditPlant(plant, userId);
         }
 
-        [HttpPost("plants/remove")]
-        public void Remove(Plant plant)
+        [HttpPost("plants/remove/{userId}")]
+        public void Remove(Plant plant, string userId)
         {
-            db.RemovePlant(plant);
+            db.RemovePlant(plant, userId);
         }
     }
 
@@ -34,20 +34,18 @@ namespace watermango {
         public string ID { get; set; }
         public string Title { get; set; }
         public int WaterTime { get; set; }
-
         public int TimeToWait { get; set;}
-
         public string Watered { get; set; }
 
+        public long LastWatered { get; set; }
         public Plant()
         {}
-
-        public Plant(string id, string title, int waterTime, string watered, int timeToWait)
+        public Plant(string id, string title, int waterTime, string watered, int timeToWait, long lastWatered)
         {
             this.ID = id; 
             this.Title = title; 
             
-            this.WaterTime = waterTime; this.Watered = watered; this.TimeToWait = timeToWait;
+            this.WaterTime = waterTime; this.Watered = watered; this.TimeToWait = timeToWait; this.LastWatered = lastWatered;
         }
     }
 }

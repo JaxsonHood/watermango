@@ -19,6 +19,30 @@ class PlantCard extends Component {
         }
     }
 
+    componentDidMount() {
+        this.interval = setInterval(() => {
+            let now = Date.now();
+
+            let differenceBetweenNowAndLastWatered = (now - this.props.data.lastWatered);
+
+            // console.log(this.props.data.watered, differenceBetweenNowAndLastWatered);
+
+            if (differenceBetweenNowAndLastWatered > 21600000){
+                // 21600000 - 6 Hours in milliseconds
+                // console.log('difference', differenceBetweenNowAndLastWatered);
+                
+                if (this.props.data.watered != "Empty"){
+                    this.UpdatePlantWateredStatus('Empty');
+                }
+            }
+
+        }, 5000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
     UpdatePlant = () => {
         this.props.updatePlant(this.props.data);
     }
@@ -41,6 +65,12 @@ class PlantCard extends Component {
     UpdatePlantWateredStatus = (status) => {
         let data = this.props.data
         data.watered = status;
+        
+        if (status == 'Full'){
+            let now = Date.now();
+            data.lastWatered = now;
+        }
+
         this.props.post('/plants/add', data);
     }
 
@@ -50,9 +80,13 @@ class PlantCard extends Component {
 
     render () {
 
-        let canWaterInSeconds = this.props.data.timeToWait;
+        let canWaterInSeconds = this.state.canWaterIn;
 
-        if (this.state.canWaterIn == -1){
+        if (!this.state.pausedByController){
+            canWaterInSeconds = this.props.data.timeToWait;
+        }
+
+        if (this.state.canWaterIn == -1 && !this.state.pausedByController){
             this.setState({canWaterIn: canWaterInSeconds})
         }
 
@@ -159,7 +193,7 @@ class PlantCard extends Component {
                 </div>
             </div>
 
-            if (!this.state.paused){
+            if (!this.state.paused || this.state.pausedByController){
                 waterItButton = <div className="transform duration-150 ease-in-out hover:scale-105 text-center p-3 py-2 px-3 text-md border-2 border-yellow-50 rounded-2xl bg-yellow-50 hover:bg-white hover:border-yellow-500 font-semibold hover:shadow-sm" onClick={this.PauseWatering}>
                     <div>Pause</div>
                     <div className='flex items-center justify-center pt-1 text-yellow-500'><FontAwesomeIcon size="lg" icon={faPause} /></div>
