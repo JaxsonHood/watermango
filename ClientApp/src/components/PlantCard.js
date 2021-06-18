@@ -54,7 +54,7 @@ class PlantCard extends Component {
     WaterPlant = () => {
         if (this.props.watered != "Full"){
             if (this.state.secondsLeft == -1 || !this.state.paused){
-                this.setState({beingWatered: true, secondsLeft: this.props.waterTime});
+                this.setState({beingWatered: true, secondsLeft: this.props.data.waterTime});
             } else {
                 this.setState({paused: false});
             }
@@ -87,7 +87,7 @@ class PlantCard extends Component {
         }
 
         if (this.state.canWaterIn == -1 && !this.state.pausedByController){
-            this.setState({canWaterIn: canWaterInSeconds})
+            this.setState({canWaterIn: this.props.data.timeToWait});
         }
 
         if (this.props.watered == 'Full' && !this.state.pausedByController){
@@ -169,8 +169,8 @@ class PlantCard extends Component {
             this.props.trackTimer(timer, this.props.data.id, 'bottom');
 
         } else if (this.state.secondsLeft == 0 && this.state.beingWatered){
-            this.setState({beingWatered: false, secondsLeft: -1});
             this.UpdatePlantWateredStatus('Full');
+            this.setState({beingWatered: false, secondsLeft: -1, canWaterIn: this.props.data.timeToWait});
         }
 
         let leftButton = <div onClick={this.UpdatePlant} className='text-center p-3 py-2 px-3 text-md font-semibold border-t-2 border-gray-50 hover:border-gray-600 text-gray-600 hover:text-gray-800'>
