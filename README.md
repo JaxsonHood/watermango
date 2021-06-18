@@ -1,4 +1,4 @@
-# watermango
+# WATERMANGO
 Watermango web-app assignment
 
 # setup
