@@ -110,7 +110,7 @@ class PlantCard extends Component {
             <div className='text-sm text-gray-400'>seconds</div>
         </div>
 
-        let waterStatusUI = <div className='transform duration-150 ease-in-out hover:scale-95 text-center p-3 py-3 px-4 text-lg border-8 rounded-2xl border-green-100 text-white bg-green-500 font-bold'>
+        let waterStatusUI = <div className='text-center p-3 py-3 px-4 text-lg border-8 rounded-2xl border-green-100 text-white bg-green-500 font-bold'>
             <div className='underline'>Full</div>
             <div className='flex items-center justify-center pt-1'><FontAwesomeIcon size='lg' icon={faTint} /></div>
         </div>
@@ -118,7 +118,7 @@ class PlantCard extends Component {
         let waterButtonClasses = "text-center p-3 py-2 px-3 text-md border-2 border-gray-50 rounded-2xl bg-gray-100 text-gray-400 opacity-50 font-semibold";
 
         if (this.props.watered == 'Empty'){
-            waterStatusUI = <div className='transform duration-150 ease-in-out hover:scale-95 text-center p-3 py-3 px-4 text-lg border-8 rounded-2xl border-red-100 text-white bg-red-500 font-bold'>
+            waterStatusUI = <div className='text-center p-3 py-3 px-4 text-lg border-8 rounded-2xl border-red-100 text-white bg-red-500 font-bold'>
                 <div className='underline'>!Hydrate</div>
                 <div className='flex items-center justify-center pt-1'><FontAwesomeIcon size='lg' icon={faHandHoldingWater} /></div>
             </div>
@@ -133,7 +133,7 @@ class PlantCard extends Component {
         }
 
         if (this.props.watered == 'Semi'){
-            waterStatusUI = <div className='transform duration-150 ease-in-out hover:scale-95 text-center p-3 py-3 px-4 text-lg border-8 rounded-2xl border-yellow-100 text-white bg-yellow-500 font-bold'>
+            waterStatusUI = <div className='text-center p-3 py-3 px-4 text-lg border-8 rounded-2xl border-yellow-100 text-white bg-yellow-500 font-bold'>
                 <div className='underline'>Hydrated</div>
                 <div className='flex items-center justify-center pt-1'><FontAwesomeIcon size='lg' icon={faFillDrip} /></div>
             </div>
@@ -213,6 +213,13 @@ class PlantCard extends Component {
                 <div className='text-3xl'><span className='text-gray-300'>in</span> 6</div>
                 <div className='text-sm text-gray-400'>hours</div>
             </div>
+        }
+
+        if (this.state.watered == 'Full' || this.props.data.watered == 'Full'){
+            leftButton = <div className='text-center p-3 py-2 px-3 text-md font-semibold border-t-2 border-gray-50 text-gray-300'>
+            <div>Edit</div>
+            <div className='flex items-center justify-center pt-1'><FontAwesomeIcon icon={faPencilAlt} /></div>
+        </div>
         }
 
         return (

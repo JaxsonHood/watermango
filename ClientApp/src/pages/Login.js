@@ -49,7 +49,7 @@ class Login extends React.Component {
             <p class="text-gray-500 dark:text-gray-400">Create an account to manage your plants</p>
         </div>
 
-        switchButton = <p class="text-sm text-center text-gray-400">Alreadt have an account? <a onClick={()=>this.setState({action: 'login'})} class="text-green-400 focus:outline-none focus:underline focus:text-green-500 dark:focus:border-green-800 cursor-pointer">Signin</a>.</p>
+        switchButton = <p class="text-sm text-center text-gray-400">Already have an account? <a onClick={()=>this.setState({action: 'login'})} class="text-green-400 focus:outline-none focus:underline focus:text-green-500 dark:focus:border-green-800 cursor-pointer">Login</a>.</p>
 
         loginRegisterButton = <button onClick={()=>this.Submit('register')} type="button" class="w-full px-3 py-4 text-black border-2 border-gray-800 focus:bg-gray-50 rounded-xl focus:outline-none font-bold">Register</button>
     }

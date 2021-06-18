@@ -94,7 +94,6 @@ class PlantsSection extends Component {
       Sort = (plants) => {
           // Automatically surface plants that need to be watered
           return plants.sort((p1, p2) => {
-              console.log(p1.watered.length < p2.watered.length);
               if (p1.watered.length > p2.watered.length){
                   return -1;
               } else if (p1.watered.length < p2.watered.length){
@@ -131,7 +130,7 @@ class PlantsSection extends Component {
                         console.log(e);
                     });
         
-                }, 250);
+                }, 350);
             }
         }
       }
