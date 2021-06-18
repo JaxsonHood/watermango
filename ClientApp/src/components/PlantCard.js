@@ -154,9 +154,9 @@ class PlantCard extends Component {
 
 
         if (this.props.eventPause && !this.state.pausedByController){
-            this.setState({paused: true, pausedByController: true});
+            this.setState({pausedByController: true});
         } else if (!this.props.eventPause && this.state.pausedByController){
-            this.setState({paused: false, pausedByController: false});
+            this.setState({pausedByController: false});
         }
 
         let percentageDone = Math.round(((this.props.waterTime - this.state.secondsLeft) / this.props.waterTime) * 100).toString() + "%";
