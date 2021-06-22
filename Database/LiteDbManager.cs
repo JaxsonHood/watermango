@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using LiteDB;
 
-using System.Reflection;
-
 namespace watermango {
     public class LiteDbManager
     {
@@ -19,6 +17,7 @@ namespace watermango {
             IEnumerable<Plant> pe = collection.FindAll();
             List<Plant> pl = pe.ToList();
 
+            // Add some default plants
             if (pl.Count == 0){
                 List<Plant> defaultPlants = new List<Plant>(){
                     new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full", 50, 1623982242897),
@@ -38,6 +37,7 @@ namespace watermango {
 
             var collection = Database.GetCollection<Plant>("plants");
 
+            // If null create a new plant
             if (p.ID == null){
                 Plant pl = new Plant(){
                     ID = NextId(),
@@ -80,6 +80,7 @@ namespace watermango {
         public User AddUser(UserTransporter transporter){
             var collection = Database.GetCollection<User>("users");
 
+            // If cannot find user create a new one
             if (collection.FindOne(x => x.Email == transporter.Email) == null){
                 User newUser = new User(NextId(), transporter.Email, transporter.Password);
                 collection.Insert(newUser);
@@ -91,6 +92,8 @@ namespace watermango {
 
         public void AddRemovePlantFromUser(Plant p, string userId, string action){
             var collection = Database.GetCollection<User>("users");
+
+            // Find user to remove plant from
             User u = collection.FindOne(x => x.ID == userId);
 
             Console.WriteLine("User to add plant to - " + u.Email);
@@ -107,6 +110,7 @@ namespace watermango {
             var collection = Database.GetCollection<User>("users");
             User u = collection.FindOne(x => x.Email == transporter.Email);
 
+            // Check if user was found and password matches
             if (u != null && u.Password == transporter.Password){
                 u.LoggedIn = true;
                 collection.Update(u);

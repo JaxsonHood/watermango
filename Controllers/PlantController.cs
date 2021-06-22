@@ -15,7 +15,7 @@ namespace watermango {
             return ief;
         }
 
-        [HttpPost("plants/add/{userId}")]
+        [HttpPost("plants/save/{userId}")]
         public void Add(Plant plant, string userId)
         {
             db.AddEditPlant(plant, userId);

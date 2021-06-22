@@ -28,6 +28,7 @@ namespace watermango {
         [HttpPost("user/logout")]
         public ActionResult<UserTransporter> Logout(UserTransporter transporter)
         {
+            // Try to logout user
             if (db.LogoutUser(transporter)){
                 ActionResult<UserTransporter> ut = new UserTransporter(){
                     Email = "",
