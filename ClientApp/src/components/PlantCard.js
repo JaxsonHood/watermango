@@ -20,6 +20,110 @@ class PlantCard extends Component {
     }
 
     componentDidMount() {
+
+        let isBeingWatered = (Date.now() - this.props.data.startedWateringAt) < (this.props.data.waterTime * 1000);
+        let isPaused = (this.props.data.pausedAt > 0);
+
+        console.log("Is being watered?", isBeingWatered);
+        console.log('info', this.props.data);
+
+        if (isBeingWatered){
+            let diff = (Date.now() - this.props.data.startedWateringAt) / 1000;
+            this.setState({beingWatered: true, secondsLeft: this.props.data.waterTime - parseInt(diff)});
+        }
+
+        let hasToWait = (Date.now() - this.props.data.lastWatered) < (this.props.data.timeToWait * 1000);
+        console.log("Has to wait?", hasToWait);
+
+        if (hasToWait && !isPaused && !isBeingWatered){
+            let currentTTW = this.props.data.timeToWait - ((Date.now() - this.props.data.lastWatered) / 1000);
+            let formattedNum = parseInt(currentTTW)
+
+            console.log('wait for', formattedNum);
+
+            this.UpdatePlantWateredStatus('Full', true);
+            this.setState({beingWatered: false, canWaterIn: formattedNum});
+        }
+
+        let dd = (Date.now() - this.props.data.startedWateringAt);
+        let shouldStatusChangeToWait = (dd > (this.props.data.waterTime * 1000) && (dd < ((this.props.data.waterTime + this.props.data.timeToWait) * 1000)));
+
+        // SET STATUS IF NOT WAITED LONG ENOUGH
+        if (shouldStatusChangeToWait && !isPaused && !hasToWait && !isBeingWatered){
+            console.log('Should change status to wait...', true);
+
+            let data = this.props.data;
+            data.status = "Full";
+            data.lastWatered = data.startedWateringAt + (data.waterTime * 1000);
+            this.props.post('/plants/add', data);
+
+            this.UpdatePlantWateredStatus('Full', true);
+
+            let currentTTW = this.props.data.timeToWait - ((Date.now() - (data.startedWateringAt + (data.waterTime * 1000))) / 1000);
+            let formattedNum = parseInt(currentTTW)
+            this.setState({beingWatered: false, canWaterIn: formattedNum});
+        }
+
+
+        if (isPaused){
+            console.log("Paused:", this.props.data.pausedAt);
+            let sl = (this.props.data.pausedAt - this.props.data.startedWateringAt) / 1000;
+
+            if (sl <= this.props.data.waterTime){
+                this.setState({beingWatered: true, canWaterIn: -1, paused: true, secondsLeft: this.props.data.waterTime - parseInt(sl)});
+            } else {
+                this.UpdatePlantWateredStatus('Full', true);
+            }
+        }
+
+
+        // let mycondition = (Date.now() - this.props.data.lastWatered) < (this.props.data.timeToWait * 1000);
+
+        // if (mycondition){
+        //     this.UpdatePlantWateredStatus('Full', true);
+        //     this.setState({beingWatered: false, secondsLeft: -1, canWaterIn: (this.props.data.timeToWait - Math.round(((Date.now() - this.props.data.lastWatered) / 1000)))});
+        //     // this.setState({canWaterIn: Math.round(((Date.now() - this.props.data.lastWatered)/1000)), beingWatered: false});
+        // }
+
+        // if (this.props.data.startedWateringAt > 0 && !mycondition){
+        //     let diff = (Date.now() - this.props.data.startedWateringAt) / 1000;
+
+        //     if (diff <= this.props.data.waterTime){
+        //         this.setState({beingWatered: true, secondsLeft: this.props.data.waterTime - parseInt(diff)});
+            
+        //     } else if (diff <= (this.props.data.waterTime + this.props.data.timeToWait) && diff > this.props.data.waterTime && this.props.data.pausedAt < 1){
+        //         console.log("Set time to wait to:" + ((this.props.data.waterTime + this.props.data.timeToWait) - diff));
+        //         this.setState({beingWatered: false, secondsLeft: -1, canWaterIn: parseInt(((this.props.data.waterTime + this.props.data.timeToWait) - diff))});
+
+        //         let data = this.props.data;
+        //         data.pausedAt = -1;
+        //         data.lastWatered = data.startedWateringAt
+        //         data.watered = "Full";
+        //         this.props.post('/plants/add', data);
+        //     }
+        // }
+
+        // if (this.props.data.startedWateringAt > 0 && this.props.data.pausedAt > 0 && !mycondition){
+        //     let diff = (this.props.data.pausedAt - this.props.data.startedWateringAt) / 1000;
+
+        //     if (diff <= this.props.data.waterTime){
+        //         this.setState({beingWatered: true, paused: true, secondsLeft: this.props.data.waterTime - parseInt(diff)});
+            
+        //     } else if (diff <= (this.props.data.waterTime + this.props.data.timeToWait) && diff > this.props.data.waterTime && this.props.data.pausedAt < 1){
+        //         console.log("Set time to wait to:" + ((this.props.data.waterTime + this.props.data.timeToWait) - diff));
+        //         this.setState({beingWatered: false, secondsLeft: -1, canWaterIn: parseInt(((this.props.data.waterTime + this.props.data.timeToWait) - diff))});
+
+        //         let data = this.props.data;
+        //         data.lastWatered = data.startedWateringAt
+        //         data.startedWateringAt = -1;
+        //         data.watered = "Full";
+        //         this.props.post('/plants/add', data);
+        //     } else {
+        //         console.log("I AM PAUSED AND NEED TO STAY PAUSED...", this.props.data.pausedAt + " - " + this.props.data.startedWateringAt)
+        //         this.setState({beingWatered: true, paused: true, secondsLeft: parseInt((this.props.data.pausedAt - this.props.data.startedWateringAt) / 1000)});
+        //     }
+        // }
+        
         this.interval = setInterval(() => {
             let now = Date.now();
 
@@ -36,7 +140,7 @@ class PlantCard extends Component {
                 }
             }
 
-        }, 5000);
+        }, 2000);
     }
 
     componentWillUnmount() {
@@ -49,32 +153,61 @@ class PlantCard extends Component {
 
     StopWatering = () => {
         this.setState({beingWatered: false, secondsLeft: -1, paused: false})
+
+        let data = this.props.data;
+        data.startedWateringAt = -1;
+        data.pausedAt = -1;
+        this.props.post('/plants/add', data);
     }
 
     WaterPlant = () => {
         if (this.props.watered != "Full"){
+            this.TellServerImWatering();
             if (this.state.secondsLeft == -1 || !this.state.paused){
                 this.setState({beingWatered: true, secondsLeft: this.props.data.waterTime});
             } else {
                 this.setState({paused: false});
             }
         }
-        
     }
 
-    UpdatePlantWateredStatus = (status) => {
+    UpdatePlantWateredStatus = (status, tf) => {
         let data = this.props.data
         data.watered = status;
         
-        if (status == 'Full'){
+        if (status == 'Full' && tf != true){
             let now = Date.now();
             data.lastWatered = now;
+            data.pausedAt = -1;
+            data.startedWateringAt = -1;
+        }
+
+        if (tf == true){
+            data.lastWatered = this.props.data.lastWatered;
         }
 
         this.props.post('/plants/add', data);
     }
 
+    TellServerImWatering = () => {
+        let data = this.props.data;
+
+        console.log("data-before-watering", data);
+        
+        if (data.startedWateringAt < 1){
+            data.startedWateringAt = Date.now();
+        }
+
+        data.pausedAt = -1;
+
+        console.log("tell server", data);
+        this.props.post('/plants/add', data);
+    }
+
     PauseWatering = () => {
+        let data = this.props.data;
+        data.pausedAt = Date.now();
+        this.props.post('/plants/add', data);
         this.setState({paused: !this.state.paused});
     }
 

@@ -10,6 +10,10 @@ namespace watermango {
         public string Watered { get; set; }
 
         public long LastWatered { get; set; }
+
+        public long StartedWateringAt { get; set; }
+
+        public long PausedAt { get; set; }
         public Plant()
         {}
         public Plant(string id, string title, int waterTime, string watered, int timeToWait, long lastWatered)
@@ -18,6 +22,9 @@ namespace watermango {
             this.Title = title; 
             
             this.WaterTime = waterTime; this.Watered = watered; this.TimeToWait = timeToWait; this.LastWatered = lastWatered;
+
+            this.StartedWateringAt = -1;
+            this.PausedAt = -1;
         }
     }
 }

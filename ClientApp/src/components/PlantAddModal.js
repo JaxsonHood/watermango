@@ -57,6 +57,10 @@ class PlantAddModal extends React.Component {
                 data.Watered = this.props.data.watered;
             }
 
+            if (this.props.data && this.props.data.lastWatered > 1){
+                data.LastWatered = this.props.data.lastWatered;
+            }
+
             this.props.DoRequest('/plants/add', data);
 
             this.setState({title: '', timeToWater: 10, isUpdate: false});

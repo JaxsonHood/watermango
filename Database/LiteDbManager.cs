@@ -13,7 +13,7 @@ namespace watermango {
 
         public LiteDbManager()
         {
-            Database = new LiteDatabase(@"WatermangoData.db");
+            Database = new LiteDatabase(@"Filename=WatermangoData.db; Connection=shared");
 
             var collection = Database.GetCollection<Plant>("plants");
             IEnumerable<Plant> pe = collection.FindAll();
