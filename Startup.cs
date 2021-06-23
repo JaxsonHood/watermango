@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Microsoft.AspNetCore.SignalR;
+
 namespace watermango
 {
     public class Startup
@@ -48,6 +50,9 @@ namespace watermango
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            // Need this to create websocket controller
+            app.UseWebSockets();
 
             app.UseEndpoints(endpoints =>
             {

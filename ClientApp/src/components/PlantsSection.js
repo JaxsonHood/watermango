@@ -7,6 +7,8 @@ import PlantCard from './PlantCard';
 import PlantAddModal from './PlantAddModal';
 
 class PlantsSection extends Component {
+    ws = new WebSocket('wss://localhost:5001/ws')
+
     constructor(){
         super();
     
@@ -16,32 +18,89 @@ class PlantsSection extends Component {
             editPlantState: null,
             doUpdate: false,
             pauseAllEvents: false,
-            timerIndex: {
-                top: {},
-                bottom: {},
-            }
+            ws: null
         }
-      }
+    }
+
+    timeout = 250;
     
-      componentDidMount() {
-        this.fetchPlants();
-      }
+    componentDidMount() {
+        // Setup websocket connection
+        this.connect();
 
-      shouldComponentUpdate = (nextProps, nextState) => {
-          if (nextState.timerIndex == this.state.timerIndex){
-            if (nextState.plants != this.state.plants ||
-                nextState.modalOpen != this.state.modalOpen ||
-                nextState.editPlantState != this.state.editPlantState ||
-                nextState.doUpdate != this.state.doUpdate ||
-                nextState.pauseAllEvents != this.state.pauseAllEvents){
-                    return true;
+        this.interval = setInterval(() => {
+            let u = JSON.parse(localStorage.getItem('user'));
+            if (this.state.ws != null && this.state.ws != undefined){
+                this.state.ws.send(u.id);
+            }
+        }, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    /**
+     * @function connect
+     * This function establishes the connect with the websocket and also ensures constant reconnection if connection closes
+     */
+      connect = () => {
+            var ws = new WebSocket("wss://localhost:5001/ws");
+            let user = JSON.parse(localStorage.getItem('user'));
+            let that = this; // cache the this
+            var connectInterval;
+    
+            // websocket onopen event listener
+            ws.onopen = () => {
+                console.log("connected websocket main component");
+    
+                this.setState({ ws: ws });
+                ws.send(user.id);
+    
+                that.timeout = 250; // reset timer to 250 on open of websocket connection 
+                clearTimeout(connectInterval); // clear Interval on on open of websocket connection
+            };
+
+            ws.onmessage = (event) => {
+                let list = JSON.parse(event.data);
+                if (JSON.stringify(this.state.plants) !== JSON.stringify(list)){
+                    this.setState({plants: list});
                 }
-
-                return false;
-          }
-
-          return true;
-      }
+            };
+    
+            // websocket onclose event listener
+            ws.onclose = e => {
+                console.log(
+                    `Socket is closed. Reconnect will be attempted in ${Math.min(
+                        10000 / 1000,
+                        (that.timeout + that.timeout) / 1000
+                    )} second.`,
+                    e.reason
+                );
+    
+                that.timeout = that.timeout + that.timeout; //increment retry interval
+                connectInterval = setTimeout(this.check, Math.min(10000, that.timeout)); //call check function after timeout
+            };
+    
+            // websocket onerror event listener
+            ws.onerror = err => {
+                console.error(
+                    "Socket encountered error: ",
+                    err.message,
+                    "Closing socket"
+                );
+    
+                ws.close();
+            };
+      };
+    
+     /**
+     * utilited by the @function connect to check if the connection is close, if so attempts to reconnect
+     */
+      check = () => {
+            const { ws } = this.state;
+            if (!ws || ws.readyState == WebSocket.CLOSED) this.connect(); //check if websocket instance is closed, if so call `connect` function.
+      };
 
       SetUpdatePlant = (plant, shouldToggle) => {
           this.setState({editPlantState: plant, doUpdate: true});
@@ -49,20 +108,6 @@ class PlantsSection extends Component {
           if (shouldToggle == null || shouldToggle == true){
             this.ToggleModal();
           }
-      }
-
-      // Keep track of all the timers so they can be deleted when there is an update
-      TrackTimer = (timer, id, type) => {
-          let curTimerIndex = this.state.timerIndex;
-
-          if (curTimerIndex != {} && curTimerIndex[type] != null && curTimerIndex[type][id] != null){
-              clearTimeout(curTimerIndex[type][id]);
-              curTimerIndex[type][id] = null;
-          } else {
-            curTimerIndex[type][id] = timer;
-          }
-
-          this.setState({timerIndex: curTimerIndex});
       }
 
       MakePostRequest = (path, data) => {
@@ -80,7 +125,6 @@ class PlantsSection extends Component {
         if (user.id){
             fetch(path + '/' + user.id, requestOptions)
             .then(response => {
-                this.fetchPlants(true);
                 return response.json();
             })
             .then(data => {
@@ -103,52 +147,14 @@ class PlantsSection extends Component {
           });
       }
     
-      fetchPlants = (pause) => {
-        if (pause) this.setState({pauseAllEvents: true});
-        let user = JSON.parse(localStorage.getItem('user'));
-
-        if (user.id){
-            if (!pause){
-                fetch('/plants/all/' + user.id)
-                .then(response => response.json())
-                .then(result => {
-                    console.log("Updated global plants...");
-                    this.setState({plants: result, pauseAllEvents: false});
-                })
-                .catch(e => {
-                    console.log(e);
-                });
-            } else {
-                setTimeout(() => {
-                    fetch('/plants/all/' + user.id)
-                    .then(response => response.json())
-                    .then(result => {
-                        console.log("Updated global plants...");
-                        this.setState({plants: result, pauseAllEvents: false});
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    });
-        
-                }, 350);
-            }
-        }
-      }
-    
       // Build plant objects
       plantItems = () => {
           let rl = [];
 
-          let count = 0;
-    
-          for (let f in this.state.plants){
-              let flow = this.state.plants[f];
+          this.state.plants.forEach(plant => {
+                rl.push(<PlantCard data={plant} title={plant.Title} waterTime={plant.WaterTime} watered={plant.Watered} updatePlant={this.SetUpdatePlant} post={this.MakePostRequest} />);
+          });
 
-              rl.push(<PlantCard trackTimer={this.TrackTimer} eventPause={this.state.pauseAllEvents} data={flow} title={flow.title} waterTime={flow.waterTime} watered={flow.watered} updatePlant={this.SetUpdatePlant} post={this.MakePostRequest} />);
-
-              count++;
-          }
-    
           return rl;
       }
 

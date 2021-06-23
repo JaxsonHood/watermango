@@ -56,6 +56,11 @@ namespace watermango {
             }
         }
 
+        public void BatchUpdatePlants(List<Plant> pl){
+            var collection = Database.GetCollection<Plant>("plants");
+            collection.Update(pl);
+        }
+
         public void RemovePlant(Plant p, string userId){
             var collection = Database.GetCollection<Plant>("plants");
             AddRemovePlantFromUser(p, userId, "remove");

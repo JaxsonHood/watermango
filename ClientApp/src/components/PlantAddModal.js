@@ -49,16 +49,19 @@ class PlantAddModal extends React.Component {
                 'WaterTime': parseInt(this.state.timeToWater),
                 'Watered': 'Empty',
                 'TimeToWait': parseInt(this.state.timeToWait),
-                'LastWatered': 1623982242897
+                'LastWatered': 1623982242897,
+                'WateringTimeLeft': -1,
+                'WaitingTimeLeft': -1,
+                'StartedWateringAt': -1
             }
 
-            if (this.props.data && this.props.data.id){
-                data['ID'] = this.props.data.id; 
-                data.Watered = this.props.data.watered;
+            if (this.props.data && this.props.data.ID){
+                data['ID'] = this.props.data.ID; 
+                data.Watered = this.props.data.Watered;
             }
 
-            if (this.props.data && this.props.data.lastWatered > 1){
-                data.LastWatered = this.props.data.lastWatered;
+            if (this.props.data && this.props.data.LastWatered > 1){
+                data.LastWatered = this.props.data.LastWatered;
             }
 
             this.props.DoRequest('/plants/save', data);
@@ -76,9 +79,9 @@ class PlantAddModal extends React.Component {
             'Watered': 'Empty'
         }
 
-        if (this.props.data && this.props.data.id){
-            data['ID'] = this.props.data.id; 
-            data.Watered = this.props.data.watered;
+        if (this.props.data && this.props.data.ID){
+            data['ID'] = this.props.data.ID; 
+            data.Watered = this.props.data.Watered;
         }
 
         this.props.DoRequest('/plants/remove', data);
@@ -90,7 +93,7 @@ class PlantAddModal extends React.Component {
     render () {
 
         if (this.props.isUpdate && !this.state.isUpdate && this.props.data != null){
-            this.setState({title: this.props.data.title, isUpdate: true, timeToWater: this.props.data.waterTime, timeToWait: this.props.data.timeToWait});
+            this.setState({title: this.props.data.Title, isUpdate: true, timeToWater: this.props.data.WaterTime, timeToWait: this.props.data.TimeToWait});
         }
 
         return (

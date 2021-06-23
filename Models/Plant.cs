@@ -13,7 +13,13 @@ namespace watermango {
 
         public long StartedWateringAt { get; set; }
 
+        public int WateringTimeLeft {get; set; }
+
+        public int WaitingTimeLeft {get; set; }
+
         public long PausedAt { get; set; }
+
+        public bool Paused {get; set; }
         public Plant()
         {}
         public Plant(string id, string title, int waterTime, string watered, int timeToWait, long lastWatered)
@@ -25,6 +31,9 @@ namespace watermango {
 
             this.StartedWateringAt = -1;
             this.PausedAt = -1;
+            this.WateringTimeLeft = -1;
+            this.WaitingTimeLeft = -1;
+            this.Paused = false;
         }
     }
 }
