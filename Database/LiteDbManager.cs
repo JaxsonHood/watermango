@@ -20,9 +20,9 @@ namespace watermango {
             // Add some default plants
             if (pl.Count == 0){
                 List<Plant> defaultPlants = new List<Plant>(){
-                    new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full", 50, 1623982242897),
-                    new Plant(NextId(), "The Roses beside Kevin", 67, "Semi", 30, 1623982242897),
-                    new Plant(NextId(), "Front-desk shrubbery", 10, "Empty", 10, 1623982242897)
+                    new Plant(NextId(), "Plant in the boardroom down the hall", 30, "Full", 50, 0),
+                    new Plant(NextId(), "The Roses beside Kevin", 67, "Semi", 30, 0),
+                    new Plant(NextId(), "Front-desk shrubbery", 10, "Empty", 10, 0)
                 };
 
                 collection.Insert(defaultPlants);

@@ -114,6 +114,17 @@ namespace watermango
 
                     plantsToUpdate.Add(plant);
                 }
+
+                var wateredMsAgo = currentTimeInMilliseconds - plant.LastWatered;
+                
+                // 6Hours=21600Sec
+                // After 6 hours change watering status to needs water
+                if ((wateredMsAgo/1000) > 21600 && plant.LastWatered > 0 && plant.Watered != "Empty"){
+                    plant.Watered = "Empty";
+                    plant.WaitingTimeLeft = -1;
+
+                    Console.WriteLine("Setting needs water for plant ID: " + plant.ID);
+                }
             });
 
             // Save plants if there are any to change

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faInfo, faInfoCircle, faPlus, faSortAmountDownAlt, faSortAmountUpAlt } from '@fortawesome/free-solid-svg-icons'
 
 import PlantCard from './PlantCard';
 import PlantAddModal from './PlantAddModal';
+
+import ReactTooltip from 'react-tooltip';
 
 class PlantsSection extends Component {
     ws = new WebSocket('wss://localhost:5001/ws')
@@ -18,7 +20,8 @@ class PlantsSection extends Component {
             editPlantState: null,
             doUpdate: false,
             pauseAllEvents: false,
-            ws: null
+            ws: null,
+            sort: false
         }
     }
 
@@ -64,7 +67,9 @@ class PlantsSection extends Component {
             ws.onmessage = (event) => {
                 let list = JSON.parse(event.data);
                 if (JSON.stringify(this.state.plants) !== JSON.stringify(list)){
-                    this.setState({plants: list});
+                    if (this.state.sort){
+                        this.setState({plants: this.Sort(list)});
+                    } else this.setState({plants: list});
                 }
             };
     
@@ -138,13 +143,24 @@ class PlantsSection extends Component {
       Sort = (plants) => {
           // Automatically surface plants that need to be watered
           return plants.sort((p1, p2) => {
-              if (p1.watered.length > p2.watered.length){
+              if (p1.Watered.length > p2.Watered.length){
                   return -1;
-              } else if (p1.watered.length < p2.watered.length){
+              } else if (p1.Watered.length < p2.Watered.length){
                   return  1
               }
               return 0;
           });
+      }
+
+      ToggleSort = () => {
+          let user = JSON.parse(localStorage.getItem('user'));
+
+          if (!this.state.sort){
+            this.setState({sort: !this.state.sort, plants: this.Sort(this.state.plants)})
+          } else {
+            this.setState({sort: !this.state.sort})
+            this.state.ws.send(user.ID);
+          }
       }
     
       // Build plant objects
@@ -167,10 +183,29 @@ class PlantsSection extends Component {
     }
 
     render () {
+        let sortedIcon = <FontAwesomeIcon icon={faSortAmountUpAlt} size='lg' />
+
+        if (this.state.sort){
+            sortedIcon = <FontAwesomeIcon icon={faSortAmountDownAlt} size='lg' />
+        }
+
         return (
             <div className='mt-10 w-full p-4 border-gray-200 text-left rounded-2xl max-w-3xl mx-auto'>
                 <div className='-mt-3 p-3 flex justify-between border-b-4 mb-6'>
-                    <h3 className='text-4xl font-bold mt-1'>Plants</h3>
+                    <div className='grid grid-cols-2 gap-4'>
+                        <h3 className='text-4xl font-bold mt-1'>Plants</h3>
+                        <div className='mx-auto mt-2 grid grid-cols-2 gap-2'>
+                            <div className='mb-1 px-2 py-1 rounded-xl flex hover:text-white hover:bg-gray-900 justify-evenly border-2 shadow-sm cursor-pointer'
+                            onClick={this.ToggleSort}>
+                                {/* <h1 className='pr-2 font-bold'>Sorted</h1> */}
+                                {sortedIcon}
+                            </div>
+
+                            <div data-tip="Click icon to the left to sort by watering status" className='mb-1 px-2 py-1'>
+                                <FontAwesomeIcon icon={faInfoCircle} size='lg' />
+                            </div>
+                        </div>
+                    </div>
                     <div className='mb-1 px-3 py-2 rounded-xl flex justify-evenly border-2 shadow-sm hover:border-gray-700 cursor-pointer'
                     onClick={this.ToggleModal}>
                         <h1 className='pr-2 font-bold'>New</h1>
