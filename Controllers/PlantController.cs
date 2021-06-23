@@ -15,6 +15,7 @@ namespace watermango {
             return ief;
         }
 
+        // Used to add/update plant
         [HttpPost("plants/save/{userId}")]
         public void Add(Plant plant, string userId)
         {

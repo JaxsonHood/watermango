@@ -148,8 +148,6 @@ class PlantCard extends Component {
 
     TellServerImWatering = () => {
         let data = this.props.data;
-
-        console.log("data-before-watering", data);
         
         if (data.startedWateringAt < 1){
             data.startedWateringAt = Date.now();
