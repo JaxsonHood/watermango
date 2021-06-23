@@ -27,6 +27,7 @@ namespace watermango
             _logger.LogInformation("Someone is trying to connect to the socket...");
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
+                // Setup socket for new connection
                 using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
                 _logger.Log(LogLevel.Information, "WebSocket connection established");
                 await ClientSocketHandler(webSocket);
@@ -44,22 +45,25 @@ namespace watermango
             try
             {
                 var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                _logger.Log(LogLevel.Information, "Message received from Client");
 
+                // Initial connection
+                _logger.Log(LogLevel.Information, "Message received from Client");
                 _logger.Log(LogLevel.Information, System.Text.Encoding.Default.GetString(buffer));
 
+                // All after connections
                 while (!result.CloseStatus.HasValue)
                 {
                     var serverMsg = Encoding.UTF8.GetBytes($"Server: Hello. You said: {Encoding.UTF8.GetString(buffer)}");
 
                     List<Plant> pl = db.GetPlantsForUser(System.Text.Encoding.Default.GetString(buffer));
 
+                    // Turn into json string to send to front-end
                     var data = Newtonsoft.Json.JsonConvert.SerializeObject(pl);
                     var encoded = Encoding.UTF8.GetBytes(data);
                     var buffer2 = new ArraySegment<Byte>(encoded, 0, encoded.Length);
 
+                    // Send the data to client
                     await webSocket.SendAsync(buffer2, result.MessageType, result.EndOfMessage, CancellationToken.None);
-                    // _logger.Log(LogLevel.Information, "Message sent to Client");
 
                     result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
@@ -73,6 +77,7 @@ namespace watermango
                     // Do something with params
                 }
 
+                // Get rid of socket instance after connection lost
                 webSocket.Dispose();
                 _logger.Log(LogLevel.Warning, "Client connection disconnected...");
             }

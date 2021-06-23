@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 using Quartz;
@@ -41,15 +39,6 @@ namespace watermango
 
             // Tell quartz to schedule the job using our trigger
             await scheduler.ScheduleJob(job, trigger);
-
-            // some sleep to show what's happening
-            // await Task.Delay(TimeSpan.FromSeconds(60));
-
-            // and last shut down the scheduler when you are ready to close your program
-            // await scheduler.Shutdown();
-
-            // Console.WriteLine("Press any key to close the application");
-            // Console.ReadKey();
 
             CreateHostBuilder(args).Build().Run();
         }
@@ -99,7 +88,10 @@ namespace watermango
 
             List<Plant> plantsToUpdate = new List<Plant>();
 
+            // Look through every plant for any active timers
             plants.ForEach((plant) => {
+
+                // de-increment watering timer
                 if (plant.WateringTimeLeft > 0 && !plant.Paused){
 
                     plant.WateringTimeLeft--;
@@ -112,6 +104,7 @@ namespace watermango
 
                     plantsToUpdate.Add(plant);
 
+                // de-increment waiting timer
                 } else if (plant.WaitingTimeLeft > 0 && plant.Watered == "Full"){
                     plant.WaitingTimeLeft--;
 
@@ -123,6 +116,7 @@ namespace watermango
                 }
             });
 
+            // Save plants if there are any to change
             if (plantsToUpdate.Count > 0){
                 db.BatchUpdatePlants(plantsToUpdate);
                 await Console.Out.WriteLineAsync("[MASTER_TICKER] - # of PLANTS: " + plants.Count + ", ~|~ Time in (ms)_"+ currentTimeInMilliseconds + " >> Updated " + plantsToUpdate.Count + " plants...");
