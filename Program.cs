@@ -8,6 +8,15 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Logging;
 
+// Notes: This Program.cs file implements a scheduler.
+//  This scheduler runs a job that is triggered every second. I use this as my 'master clock' 
+//  for all the plant timers. Once every second the job runs and the MasterTicker 
+//  class loops through all the plants and checks if the plant has any timers to
+//  de-increment. The watering timer and the waiting timer are checked. In addition
+//  this class also checks if a plant has not been watered for 6 hours, and if not
+//  updates the plants status accordingly. I also save when it was last watered 
+//  and when it started watering so that I can resume state at any time.
+
 namespace watermango
 {
     public class Program
@@ -23,12 +32,12 @@ namespace watermango
             // and start it off
             await scheduler.Start();
 
-            // define the job and tie it to our HelloJob class
+            // define the job and tie it to the MasterTicker class
             IJobDetail job = JobBuilder.Create<MasterTicker>()
                 .WithIdentity("job1", "group1")
                 .Build();
 
-            // Trigger the job to run now, and then repeat every 10 seconds
+            // Trigger the job to run now, and then repeat every 1 seconds
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
@@ -37,7 +46,7 @@ namespace watermango
                     .RepeatForever())
                 .Build();
 
-            // Tell quartz to schedule the job using our trigger
+            // Tell quartz to schedule the job using the trigger
             await scheduler.ScheduleJob(job, trigger);
 
             CreateHostBuilder(args).Build().Run();

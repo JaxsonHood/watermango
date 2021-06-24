@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+// Notes: This class contains all the web socket code.
+//  The main job of this class is let any client app make
+//  a constant connection to the server so that it can update
+//  the plant state realtime. It accepts a userId and returns
+//  a list of plants
+
 namespace watermango
 {
     [ApiController]
